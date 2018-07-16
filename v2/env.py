@@ -20,6 +20,7 @@ env.plot()
 '''
 
 import os
+import datetime
 import pandas as pd 
 import numpy as np
 from .utils import *
@@ -35,10 +36,11 @@ class Environment:
     def __init__(self, coin_name="ethereum", states=state_list, recent_k = 0):
         self.coin_name = coin_name
         self.states = states
-
+        dateparse = lambda x: datetime.datetime.fromtimestamp(float(x))
         self.series = pd.read_csv("%s/cryptocurrencypricehistory/%s_price.csv" 
                                   % (os.path.dirname(os.path.abspath(__file__)), self.coin_name), 
-                                  parse_dates=["Date"])
+                                  parse_dates=["Date"],
+                                  date_parser = dateparse)
         
         self.series.index = self.series.sort_values(by=["Date"]).index
         self.series = self.series.sort_index()
