@@ -22,7 +22,7 @@ env.plot()
 import os
 import pandas as pd 
 import numpy as np
-from utils import *
+from .utils import *
 
 
 state_list = ["current_price", "rolling_mean", "rolling_std", "cross_upper_band", "cross_lower_band", "upper_band",

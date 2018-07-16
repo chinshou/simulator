@@ -1,5 +1,5 @@
 import random 
-from portfolio import Action
+from .portfolio import Action
 
 '''
 ra = RandomAgent(Action)

@@ -17,8 +17,8 @@
 
 '''
 
-from env import *
-from portfolio import *
+from .env import *
+from .portfolio import *
 
 from keras.models import Sequential
 from keras.layers import Dense
@@ -136,9 +136,9 @@ class DDQNAgent:
         uniques.sort() 
         
         for elem in uniques:
-            print elem
-            print mem_str.count(elem)
-            print "\n"
+            print(elem)
+            print(mem_str.count(elem))
+            print("\n")
         
     def __replay(self, batch_size):
         minibatch = random.sample(self.memory, self.batch_size)
@@ -193,10 +193,10 @@ class DDQNAgent:
                     cum_return = self.portfolio.getReturnsPercent(self.env.getCurrentPrice())
                     self.cum_returns.append(cum_return)
                     
-                    print("episode: {}/{}, returns: {}, epsilon: {:.2}"
+                    print(("episode: {}/{}, returns: {}, epsilon: {:.2}"
                           .format(i+1, num_episodes, 
                                   cum_return, 
-                                  self.epsilon))
+                                  self.epsilon)))
                     break
              
             # train the Neural Network incrementally with the new experiences
@@ -218,7 +218,7 @@ class DDQNAgent:
         while (True):
             action = self.__act(state)
             action = self.portfolio.apply_action(self.env.getCurrentPrice(), action)
-            print action
+            print(action)
             
             isDone, next_state = self.env.step()
             next_state = next_state + self.portfolio.getStates()
@@ -227,7 +227,7 @@ class DDQNAgent:
             if isDone:
             	break
 
-        print self.portfolio.getReturnsPercent(self.env.getCurrentPrice())
+        print(self.portfolio.getReturnsPercent(self.env.getCurrentPrice()))
         
    
     def plot_cum_returns(self):

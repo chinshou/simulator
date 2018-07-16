@@ -1,6 +1,6 @@
-from env import *
-from simple_agents import * 
-from portfolio import *
+from .env import *
+from .simple_agents import * 
+from .portfolio import *
 
 def run_random_agent(coin_name="ethereum", num_coins_per_order=100, recent_k=0):
     ra = RandomAgent(Action)
@@ -15,7 +15,7 @@ def run_random_agent(coin_name="ethereum", num_coins_per_order=100, recent_k=0):
         portfolio.apply_action(env.getCurrentPrice(), action)
         is_done, state = env.step()
 
-    print "Final holdings:", portfolio.getCurrentHoldings(env.getCurrentPrice())
+    print("Final holdings:", portfolio.getCurrentHoldings(env.getCurrentPrice()))
     return portfolio.getReturnsPercent(env.getCurrentPrice())
 
 
@@ -35,7 +35,7 @@ def run_bollingerband_agent(coin_name="ethereum", num_coins_per_order=100, recen
         portfolio.apply_action(env.getCurrentPrice(), action)
         is_done, state = env.step()
 
-    print "Final holdings:", portfolio.getCurrentHoldings(env.getCurrentPrice())    
+    print("Final holdings:", portfolio.getCurrentHoldings(env.getCurrentPrice()))    
     return portfolio.getReturnsPercent(env.getCurrentPrice())
 
 
@@ -50,6 +50,6 @@ def run_alwaysbuy_agent(coin_name="ethereum", num_coins_per_order=100, recent_k=
         portfolio.apply_action(env.getCurrentPrice(), Action.BUY)
         is_done, state = env.step()
 
-    print "Final holdings:", portfolio.getCurrentHoldings(env.getCurrentPrice())
+    print("Final holdings:", portfolio.getCurrentHoldings(env.getCurrentPrice()))
     return portfolio.getReturnsPercent(env.getCurrentPrice())
 
