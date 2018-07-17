@@ -84,8 +84,8 @@ from collections import deque
 class DDQNAgent:
     
     # initialize internal variables
-    def __init__(self, gamma=0.95, num_neutron=24, epsilon_min = 0.001, epsilon_decay=0.995, 
-                 coin_name='ethereum', num_coins_per_order=100, recent_k = 0,
+    def __init__(self, gamma=0.95, num_neutron=24, epsilon_min = 0.001, epsilon_decay=0.995,
+                 coin_name='ethereum', num_coins_per_order=100, num_step = 0,
                  external_states = ["current_price", "rolling_mean", "rolling_std", 
                                  "cross_upper_band", "cross_lower_band"],
                  internal_states = ["coin", "cash", "total_value"], verbose=False):
@@ -98,7 +98,7 @@ class DDQNAgent:
         self.coin_name = coin_name
         # External states
         self.external_states = external_states
-        self.env = Environment(coin_name=coin_name, states=external_states, recent_k=recent_k)
+        self.env = Environment(coin_name=coin_name, states=external_states, num_step=num_step)
         # Internal states
         self.internal_states = internal_states
         self.portfolio = Portfolio(num_coins_per_order=num_coins_per_order, states=internal_states,

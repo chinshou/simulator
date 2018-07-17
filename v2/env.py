@@ -21,8 +21,10 @@ env.plot()
 
 import os
 import datetime
+import time
 import pandas as pd 
 import numpy as np
+import random
 from .utils import *
 
 
@@ -33,25 +35,22 @@ class Environment:
     
     # load pricing data
     # initialize the environment variables
-    def __init__(self, coin_name="ethereum", states=state_list, recent_k = 0):
+    def __init__(self, coin_name="ethereum", states=state_list, num_step = 5000):
+        random.seed(time.time())
         self.coin_name = coin_name
         self.states = states
         dateparse = lambda x: datetime.datetime.fromtimestamp(float(x))
-        self.series = pd.read_csv("%s/cryptocurrencypricehistory/%s_price.csv" 
+        self.num_step= num_step
+        self.all_series = pd.read_csv("%s/cryptocurrencypricehistory/%s_price.csv"
                                   % (os.path.dirname(os.path.abspath(__file__)), self.coin_name), 
                                   parse_dates=["Date"],
                                   date_parser = dateparse)
         
-        self.series.index = self.series.sort_values(by=["Date"]).index
-        self.series = self.series.sort_index()
+        self.all_series.index = self.all_series.sort_values(by=["Date"]).index
+        self.all_series = self.all_series.sort_index()
         
-        if recent_k > 0:
-            self.series = self.series[-recent_k:]
-            self.series.index = [i for i in range(len(self.series))]
-        
-        self.length = len(self.series.index)
-        self.current_index = 0
-        self.__init()
+        # if self.num_step > 0:
+        self.reset()
 
     # deriving the features used for the state definition
     def __init(self):
@@ -153,7 +152,13 @@ class Environment:
         plt.show()
 
     def reset(self):
+        self.offset = random.randint(0, self.all_series.shape[0] - self.num_step - 1)
+        self.series = self.all_series[self.offset:self.offset + self.num_step]
+        self.series.index = [i for i in range(len(self.series))]
+
+        self.length = len(self.series.index)
         self.current_index = 0
+        self.__init()
         
     def getReward(self, action):
         a = 0

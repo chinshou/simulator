@@ -4,7 +4,7 @@ from .portfolio import *
 
 def run_random_agent(coin_name="ethereum", num_coins_per_order=100, recent_k=0):
     ra = RandomAgent(Action)
-    env = Environment(coin_name=coin_name, recent_k=recent_k)
+    env = Environment(coin_name=coin_name, num_step=recent_k)
     portfolio = Portfolio(num_coins_per_order = num_coins_per_order)
 
     is_done = False 
@@ -21,8 +21,8 @@ def run_random_agent(coin_name="ethereum", num_coins_per_order=100, recent_k=0):
 
 def run_bollingerband_agent(coin_name="ethereum", num_coins_per_order=100, recent_k=0):
     bba = BollingerBandAgent()
-    env = Environment(coin_name=coin_name, recent_k=recent_k, \
-        states=["cross_upper_band", "cross_lower_band"])
+    env = Environment(coin_name=coin_name, num_step=recent_k, \
+                      states=["cross_upper_band", "cross_lower_band"])
     portfolio = Portfolio(num_coins_per_order = num_coins_per_order)
 
     is_done = False 
@@ -40,7 +40,7 @@ def run_bollingerband_agent(coin_name="ethereum", num_coins_per_order=100, recen
 
 
 def run_alwaysbuy_agent(coin_name="ethereum", num_coins_per_order=100, recent_k=0):
-    env = Environment(coin_name=coin_name, recent_k=recent_k)
+    env = Environment(coin_name=coin_name, num_step=recent_k)
     portfolio = Portfolio(num_coins_per_order = num_coins_per_order)
 
     is_done = False 
