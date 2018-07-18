@@ -15,7 +15,7 @@ coin_name = 'bitcoin'
 btc_agent = DDQNAgent(coin_name=coin_name, num_step= num_step, num_coins_per_order = num_coins_per_order,
                       epsilon_min = epsilon_min,
                       external_states = ["current_price", "dif5t","dea5t","dif30t","dea30t","dif1h","dea1h", "volume"],
-                      internal_states = ["coin", "cash", "total_value"], verbose = False)
+                      internal_states = ["coin", "cash", "total_value", "is_holding_coin"], verbose = False)
 # btc_agent.plot_env(states_to_plot=["current_price", "upper_band", "lower_band"])
 #btc_agent.train(num_episodes=60)
 #profile.run("btc_agent.train(num_episodes=80)")
