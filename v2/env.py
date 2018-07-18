@@ -25,10 +25,11 @@ import time
 import pandas as pd 
 import numpy as np
 import random
+import talib
 from .utils import *
 
 
-state_list = ["current_price", "rolling_mean", "rolling_std", "cross_upper_band", "upper_band",
+state_list = ["current_price", "rolling_mean", "rolling_std", "dif5t", "dea5t",
              "volume", "price_over_sma"]
 
 class Environment:
@@ -44,6 +45,11 @@ class Environment:
         self.all_series = pd.read_csv("%s/cryptocurrencypricehistory/%s_price.csv"
                                   % (os.path.dirname(os.path.abspath(__file__)), self.coin_name), 
                                   parse_dates=["Date"])#,date_parser = dateparse)
+        # calc 5 minutes MACD
+        dif, dea, hist=talib.MACD(self.all_series['Open'].values, fastperiod=12, slowperiod=26, signalperiod=9)
+        self.all_series["DIF5T"]=dif
+        self.all_series["DEA5T"]=dea
+        self.all_series.dropna()
 
         self.all_series.index = self.all_series.sort_values(by=["Date"]).index
         self.all_series = self.all_series.sort_index()
@@ -78,15 +84,14 @@ class Environment:
         ### States
         self.rm = self.series["Open"].rolling(window=20, center=False, min_periods=0).mean()
         self.rstd = self.series["Open"].rolling(window=20, center=False, min_periods=0).std()
-        self.upper_band = self.rm + 2 * self.rstd
 
         ### Mapping states to their names
         self.state_dict = {}
         self.state_dict["current_price"] = self.series["Open"]
         self.state_dict["rolling_mean"] = self.rm
         self.state_dict["rolling_std"] = self.rstd
-        self.state_dict["cross_upper_band"] = self.__crossUpperBand()
-        self.state_dict["upper_band"] = self.upper_band
+        self.state_dict["dif5t"] =  self.series["DIF5T"]
+        self.state_dict["dea5t"] = self.series["DEA5T"]
         self.state_dict["volume"] = self.series["Volume"]
         self.state_dict["price_over_sma"] = self.series["Open"]/self.rm
         
@@ -97,13 +102,6 @@ class Environment:
             crossUpperBand.append(self.__checkCrossUpperBand(i)*1)
         return crossUpperBand
     
-    
-    def __checkCrossUpperBand(self, curr_index):
-        return (
-            curr_index - 1 >= 0
-            and self.upper_band.loc[curr_index - 1] <= self.state_dict["current_price"][curr_index]
-            and self.upper_band.loc[curr_index] > self.state_dict["current_price"][curr_index]
-        )
     
     ## This is the only place where the state should be exposed
     ''' 
