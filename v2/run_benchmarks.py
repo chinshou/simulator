@@ -19,9 +19,9 @@ def run_random_agent(coin_name="ethereum", num_coins_per_order=100, recent_k=0):
     return portfolio.getReturnsPercent(env.getCurrentPrice())
 
 
-def run_bollingerband_agent(coin_name="ethereum", num_coins_per_order=100, recent_k=0):
+def run_bollingerband_agent(coin_name="ethereum", num_coins_per_order=100, num_step=0, offset=0):
     bba = BollingerBandAgent()
-    env = Environment(coin_name=coin_name, num_step=recent_k, \
+    env = Environment(coin_name=coin_name, num_step=num_step, offset=offset, \
                       states=["cross_upper_band", "cross_lower_band"])
     portfolio = Portfolio(num_coins_per_order = num_coins_per_order)
 

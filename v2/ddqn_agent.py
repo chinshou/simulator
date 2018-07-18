@@ -205,11 +205,11 @@ class DDQNAgent:
         self.target_model.save('model/{}.model.h5'.format(self.coin_name))
                 
     
-    def test(self, epsilon = None):
+    def test(self,offset=0, epsilon = None):
         if epsilon is not None:
             self.epsilon = epsilon
         
-        self.env.reset()
+        self.env.reset(offset)
         self.portfolio.reset()
         state = self.env.getStates() + self.portfolio.getStates()
         self.model.load('model/{}.model.h5'.format(self.coin_name))

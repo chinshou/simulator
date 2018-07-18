@@ -36,7 +36,7 @@ class Environment:
     
     # load pricing data
     # initialize the environment variables
-    def __init__(self, coin_name="ethereum", states=state_list, num_step = 5000):
+    def __init__(self, coin_name="ethereum", states=state_list, num_step = 5000, offset=0):
         random.seed(time.time())
         self.coin_name = coin_name
         self.states = states
@@ -84,7 +84,7 @@ class Environment:
         #self.all_series.to_csv("pandas.csv")
 
         # if self.num_step > 0:
-        self.reset()
+        self.reset(offset)
 
     # deriving the features used for the state definition
     def __init(self):
@@ -94,6 +94,7 @@ class Environment:
         ### States
         self.rm = self.series["Open"].rolling(window=20, center=False, min_periods=0).mean()
         self.rstd = self.series["Open"].rolling(window=20, center=False, min_periods=0).std()
+        self.upper_band, self.lower_band = self.rm + 2 * self.rstd, self.rm - 2 * self.rstd
 
         ### Mapping states to their names
         self.state_dict = {}
@@ -107,6 +108,10 @@ class Environment:
         self.state_dict["dif1h"] =  self.series["DIF1H"]
         self.state_dict["dea1h"] = self.series["DEA1H"]
         self.state_dict["volume"] = self.series["Volume"]
+        self.state_dict["cross_upper_band"] = self.__crossUpperBand()
+        self.state_dict["cross_lower_band"] = self.__crossLowerBand()
+        self.state_dict["upper_band"] = self.upper_band
+        self.state_dict["lower_band"] = self.lower_band
         self.state_dict["price_over_sma"] = self.series["Open"]/self.rm
         
         
@@ -117,6 +122,27 @@ class Environment:
         return crossUpperBand
     
     
+    def __crossLowerBand(self):
+        crossLowerBand = [0]
+        for i in range(1, len(self.series)):
+            crossLowerBand.append(self.__checkCrossLowerBand(i)*1)
+        return crossLowerBand
+    
+        
+    def __checkCrossUpperBand(self, curr_index):
+        return (
+            curr_index - 1 >= 0
+            and self.upper_band.loc[curr_index - 1] <= self.state_dict["current_price"][curr_index]
+            and self.upper_band.loc[curr_index] > self.state_dict["current_price"][curr_index]
+        )
+    
+    def __checkCrossLowerBand(self, curr_index):
+        return (
+            curr_index - 1 >= 0
+            and self.lower_band.loc[curr_index - 1] >= self.state_dict["current_price"][curr_index]
+            and self.lower_band.loc[curr_index] < self.state_dict["current_price"][curr_index]
+        )
+
     ## This is the only place where the state should be exposed
     ''' 
     isDone, state = env.step()
@@ -166,8 +192,10 @@ class Environment:
         ax.legend(states_to_plot)
         plt.show()
 
-    def reset(self):
-        self.offset = random.randint(0, self.all_series.shape[0] - self.num_step - 1)
+    def reset(self, offset=0):
+        self.offset=offset
+        if offset==0:
+            self.offset = random.randint(0, self.all_series.shape[0] - self.num_step - 1)
         self.series = self.all_series[self.offset:self.offset + self.num_step]
         self.series.index = [i for i in range(len(self.series))]
 
