@@ -29,7 +29,7 @@ import talib
 from .utils import *
 
 
-state_list = ["current_price", "rolling_mean", "rolling_std", "dif5t", "dea5t",
+state_list = ["current_price", "rolling_mean", "rolling_std", "dif5t", "dea5t","dif30t", "dea30t","dif1h", "dea1h",
              "volume", "price_over_sma"]
 
 class Environment:
@@ -49,6 +49,16 @@ class Environment:
         dif, dea, hist=talib.MACD(self.all_series['Open'].values, fastperiod=12, slowperiod=26, signalperiod=9)
         self.all_series["DIF5T"]=dif
         self.all_series["DEA5T"]=dea
+
+        dif, dea, hist=talib.MACD(self.all_series['Open'].values, fastperiod=12*6, slowperiod=26*6, signalperiod=9*6)
+        self.all_series["DIF30T"]=dif
+        self.all_series["DEA30T"]=dea
+
+        dif, dea, hist=talib.MACD(self.all_series['Open'].values, fastperiod=12*6*2, slowperiod=26*6*2, signalperiod=9*6*2)
+        self.all_series["DIF1H"]=dif
+        self.all_series["DEA1H"]=dea
+        self.all_series.dropna()
+
         self.all_series.dropna()
 
         self.all_series.index = self.all_series.sort_values(by=["Date"]).index
@@ -92,6 +102,10 @@ class Environment:
         self.state_dict["rolling_std"] = self.rstd
         self.state_dict["dif5t"] =  self.series["DIF5T"]
         self.state_dict["dea5t"] = self.series["DEA5T"]
+        self.state_dict["dif30t"] =  self.series["DIF30T"]
+        self.state_dict["dea30t"] = self.series["DEA30T"]
+        self.state_dict["dif1h"] =  self.series["DIF1H"]
+        self.state_dict["dea1h"] = self.series["DEA1H"]
         self.state_dict["volume"] = self.series["Volume"]
         self.state_dict["price_over_sma"] = self.series["Open"]/self.rm
         

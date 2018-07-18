@@ -84,11 +84,10 @@ from collections import deque
 class DDQNAgent:
     
     # initialize internal variables
-    def __init__(self, gamma=0.95, num_neutron=24, epsilon_min = 0.001, epsilon_decay=0.995,
+    def __init__(self, gamma=0.95, num_neutron=27, epsilon_min = 0.001, epsilon_decay=0.995,
                  coin_name='ethereum', num_coins_per_order=100, num_step = 0,
-                 external_states = ["current_price", "rolling_mean", "rolling_std", 
-                                 "cross_upper_band", "cross_lower_band"],
-                 internal_states = ["coin", "cash", "total_value"], verbose=False):
+                 external_states = ["current_price", "dif5t","dea5t","dif30t","dea30t", "volume"],
+                 internal_states = ["coin", "cash", "total_value", "is_holding_coin"], verbose=False):
         self.memory = deque(maxlen=2000)
         self.batch_size = 32
         self.gamma = gamma

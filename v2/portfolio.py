@@ -116,6 +116,8 @@ class Portfolio:
     # reward defintion
     def getReward(self):
         #return self.reward
+        #https://www.zhihu.com/question/27264526
+        #Todo:计算Sharpe Ratio
         if self.cash_used == 0.0:
             return 0.0
         return (self.getCurrentValue(self.final_price) - self.cash_used)/self.cash_used
