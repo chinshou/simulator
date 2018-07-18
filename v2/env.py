@@ -39,16 +39,34 @@ class Environment:
         random.seed(time.time())
         self.coin_name = coin_name
         self.states = states
-        dateparse = lambda x: datetime.datetime.fromtimestamp(float(x))
+        #dateparse = lambda x: datetime.datetime.fromtimestamp(float(x))
         self.num_step= num_step
         self.all_series = pd.read_csv("%s/cryptocurrencypricehistory/%s_price.csv"
                                   % (os.path.dirname(os.path.abspath(__file__)), self.coin_name), 
-                                  parse_dates=["Date"],
-                                  date_parser = dateparse)
-        
+                                  parse_dates=["Date"])#,date_parser = dateparse)
+
         self.all_series.index = self.all_series.sort_values(by=["Date"]).index
         self.all_series = self.all_series.sort_index()
-        
+
+        # self.all_series.set_index('Date', inplace=True)
+        # self.all_series['Date'] = self.all_series.index
+        # # 设定转换周期period_type  转换为周是'W',月'M',季度线'Q',五分钟'5min',12天'12D'
+        # period_type = '5T'
+        # # 进行转换，周线的每个变量都等于那一周中最后一个交易日的变量值
+        # period_stock_data = self.all_series.resample(period_type, how='last')
+        # period_stock_data['Date'] = self.all_series['Date'].resample(period_type, how='first')
+        # # 周线的open等于那一周中第一个交易日的open
+        # period_stock_data['Open'] = self.all_series['Open'].resample(period_type, how='first')
+        # # 周线的high等于那一周中的high的最大值
+        # period_stock_data['High'] = self.all_series['High'].resample(period_type, how='max')
+        # # 周线的low等于那一周中的low的最大值
+        # period_stock_data['Low'] = self.all_series['Low'].resample(period_type, how='min')
+        # # 周线的volume等于那一周中volume和money各自的和
+        # period_stock_data['Volume'] = self.all_series['Volume'].resample(period_type, how='sum')
+        # # 导出数据
+        # period_stock_data.to_csv('bitcoin_price_5m.csv', index=False)
+        #self.all_series.to_csv("pandas.csv")
+
         # if self.num_step > 0:
         self.reset()
 
