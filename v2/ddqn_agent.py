@@ -217,7 +217,8 @@ class DDQNAgent:
         while (True):
             action = self.__act(state)
             action = self.portfolio.apply_action(self.env.getCurrentPrice(), action)
-            print(action)
+            if action !=Action.HOLD:
+                print(action)
             
             isDone, next_state = self.env.step()
             next_state = next_state + self.portfolio.getStates()
@@ -227,7 +228,7 @@ class DDQNAgent:
             	break
 
         print(self.portfolio.getReturnsPercent(self.env.getCurrentPrice()))
-        
+        print("Final holdings:", self.portfolio.getCurrentHoldings(self.env.getCurrentPrice()))
    
     def plot_cum_returns(self):
         import matplotlib.pyplot as plt

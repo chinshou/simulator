@@ -45,6 +45,10 @@ class Environment:
         self.all_series = pd.read_csv("%s/cryptocurrencypricehistory/%s_price.csv"
                                   % (os.path.dirname(os.path.abspath(__file__)), self.coin_name), 
                                   parse_dates=["Date"])#,date_parser = dateparse)
+        # self.all_series["Close"].replace
+        self.all_series.dropna()
+        # self.all_series.to_csv("%s/cryptocurrencypricehistory/%s_price.csv"
+        #                           % (os.path.dirname(os.path.abspath(__file__)), self.coin_name))
         # calc 5 minutes MACD
         dif, dea, hist=talib.MACD(self.all_series['Open'].values, fastperiod=12, slowperiod=26, signalperiod=9)
         self.all_series["DIF5T"]=dif
@@ -57,9 +61,6 @@ class Environment:
         dif, dea, hist=talib.MACD(self.all_series['Open'].values, fastperiod=12*6*2, slowperiod=26*6*2, signalperiod=9*6*2)
         self.all_series["DIF1H"]=dif
         self.all_series["DEA1H"]=dea
-        self.all_series.dropna()
-
-        self.all_series.dropna()
 
         self.all_series.index = self.all_series.sort_values(by=["Date"]).index
         self.all_series = self.all_series.sort_index()
@@ -212,7 +213,7 @@ class Environment:
             
         price_t = self.getCurrentPrice()
         price_t_minus_1 = self.getPriceAt(self.current_index - 1)
-        price_t_minus_n = self.getPriceAt(self.current_index - 10)
+        price_t_minus_n = self.getPriceAt(self.current_index - 10*12*24)
         
         r = (1 + a*(price_t - price_t_minus_1)/price_t_minus_1)*price_t_minus_1/price_t_minus_n
         return r
